@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bézout Calculator</title>
+</head>
+<body>
+    <h1>Bézout Coefficient Calculator</h1>
+    <form id="bezout-form">
+        <label>
+            a: <input type="number" id="a" required>
+        </label>
+        <br>
+        <label>
+            b: <input type="number" id="b" required>
+        </label>
+        <br>
+        <button type="submit">Calculate</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        function bezout(a, b) {
+            let old_r = a, r = b;
+            let old_s = 1, s = 0;
+            let old_t = 0, t = 1;
+
+            while (r !== 0) {
+                let quotient = Math.floor(old_r / r);
+                [old_r, r] = [r, old_r - quotient * r];
+                [old_s, s] = [s, old_s - quotient * s];
+                [old_t, t] = [t, old_t - quotient * t];
+            }
+
+            return {
+                gcd: old_r,
+                x: old_s,
+                y: old_t
+            };
+        }
+
+        document.getElementById('bezout-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            let a = parseInt(document.getElementById('a').value);
+            let b = parseInt(document.getElementById('b').value);
+
+            let result = bezout(a, b);
+
+            document.getElementById('result').innerText =
+                `gcd(${a}, ${b}) = ${result.gcd}, x = ${result.x}, y = ${result.y}`;
+        });
+    </script>
+</body>
+</html>
