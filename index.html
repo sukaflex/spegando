@@ -1,55 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Bézout Calculator</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bézout Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    input {
+      padding: 10px;
+      margin: 5px;
+      width: 200px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin-top: 10px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+      color: #222;
+    }
+  </style>
 </head>
 <body>
-    <h1>Bézout Coefficient Calculator</h1>
-    <form id="bezout-form">
-        <label>
-            a: <input type="number" id="a" required>
-        </label>
-        <br>
-        <label>
-            b: <input type="number" id="b" required>
-        </label>
-        <br>
-        <button type="submit">Calculate</button>
-    </form>
-    <div id="result"></div>
+  <h1>Bézout Calculator</h1>
+  <input id="a" type="number" placeholder="Enter a" />
+  <input id="b" type="number" placeholder="Enter b" />
+  <button onclick="calculate()">Calculate</button>
+  <p id="result"></p>
 
-    <script>
-        function bezout(a, b) {
-            let old_r = a, r = b;
-            let old_s = 1, s = 0;
-            let old_t = 0, t = 1;
+  <script>
+    function bezout(a, b) {
+      let old_r = a, r = b;
+      let old_s = 1, s = 0;
+      let old_t = 0, t = 1;
 
-            while (r !== 0) {
-                let quotient = Math.floor(old_r / r);
-                [old_r, r] = [r, old_r - quotient * r];
-                [old_s, s] = [s, old_s - quotient * s];
-                [old_t, t] = [t, old_t - quotient * t];
-            }
+      while (r !== 0) {
+        let quotient = Math.floor(old_r / r);
+        [old_r, r] = [r, old_r - quotient * r];
+        [old_s, s] = [s, old_s - quotient * s];
+        [old_t, t] = [t, old_t - quotient * t];
+      }
 
-            return {
-                gcd: old_r,
-                x: old_s,
-                y: old_t
-            };
-        }
+      return [old_s, old_t]; // Bézout coefficients
+    }
 
-        document.getElementById('bezout-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            let a = parseInt(document.getElementById('a').value);
-            let b = parseInt(document.getElementById('b').value);
-
-            let result = bezout(a, b);
-
-            document.getElementById('result').innerText =
-                `gcd(${a}, ${b}) = ${result.gcd}, x = ${result.x}, y = ${result.y}`;
-        });
-    </script>
+    function calculate() {
+      const a = parseInt(document.getElementById("a").value);
+      const b = parseInt(document.getElementById("b").value);
+      if (isNaN(a) || isNaN(b)) {
+        document.getElementById("result").textContent = "Please enter two valid integers.";
+        return;
+      }
+      const [x, y] = bezout(a, b);
+      document.getElementById("result").textContent = `x = ${x}, y = ${y}, such that ${a}·(${x}) + ${b}·(${y}) = ${a * x + b * y}`;
+    }
+  </script>
 </body>
 </html>
